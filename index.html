@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>TaskJar — Convierte tu planificación en progreso real</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="TaskJar ayuda a personas ocupadas a planificar trabajo, deporte, ocio y familia con una interfaz simple y funciones inteligentes.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glass {
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.08);
+    }
+    .hero-bg{
+      background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1600&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+    }
+    .video-step {
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+    }
+    .video-step video {
+      width: 100%;
+      height: 12rem;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-white">
+
+<!-- NAVBAR RESTAURADO -->
+<header class="sticky top-0 z-40 bg-slate-950/60 backdrop-blur border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="flex h-16 items-center justify-between">
+      <a href="#" class="flex items-center gap-2">
+        <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 text-white font-black">TJ</span>
+        <span class="text-lg font-semibold tracking-tight">TaskJar</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm">
+        <a href="#como-funciona" class="text-slate-300 hover:text-white">Cómo funciona</a>
+        <a href="#contacto" class="text-slate-300 hover:text-white">Contacto</a>
+        <a href="#contacto" class="inline-flex items-center rounded-lg px-4 py-2 font-medium text-slate-950 bg-white hover:bg-slate-200">Quiero probar</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO RESTAURADO -->
+<section class="relative hero-bg">
+  <div class="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/75 to-slate-950/90"></div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-28 lg:py-32">
+    <div class="max-w-3xl">
+      <span class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-indigo-300/90">
+        <span class="h-1.5 w-1.5 rounded-full bg-indigo-400"></span> Simple • Inteligente • Humana
+      </span>
+      <h1 class="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black leading-tight">
+        Planifica sin agobios.
+        <span class="bg-gradient-to-r from-indigo-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">Gana calma y tiempo real</span>.
+      </h1>
+      <p class="mt-5 text-lg text-slate-300">
+        TaskJar te ayuda a organizar trabajo, deporte, ocio y familia con una interfaz minimalista, recordatorios empáticos y revisión automática de tu semana.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3">
+        <a href="#contacto" class="inline-flex items-center justify-center rounded-xl px-6 py-3 bg-white text-slate-950 font-semibold hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-white/40">
+          Quiero acceso anticipado
+        </a>
+        <a href="#como-funciona" class="inline-flex items-center justify-center rounded-xl px-6 py-3 bg-white/5 text-white ring-1 ring-white/10 hover:bg-white/10">
+          Ver cómo funciona
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECCIÓN CÓMO FUNCIONA CON VIDEOS -->
+<section id="como-funciona" class="relative py-20 sm:py-24">
+  <div class="absolute inset-0 -z-10 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"></div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl">
+      <h2 class="text-3xl sm:text-4xl font-bold">Cómo funciona TaskJar</h2>
+      <p class="mt-3 text-slate-300">Cada paso, acompañado de una experiencia visual.</p>
+    </div>
+    <div class="mt-10 grid md:grid-cols-2 gap-6">
+      <div class="video-step">
+        <video autoplay muted loop playsinline src="videos/roles.mp4"></video>
+        <div class="p-4">
+          <h3 class="text-lg font-semibold">1. Define tus Roles</h3>
+          <p class="text-slate-300">Integra trabajo, familia, ocio, etc. en un entorno limpio y sencillo.</p>
+        </div>
+      </div>
+      <div class="video-step">
+        <video autoplay muted loop playsinline src="videos/metas.mp4"></video>
+        <div class="p-4">
+          <h3 class="text-lg font-semibold">2. Define tus Metas</h3>
+          <p class="text-slate-300">Márcate aquellos objetivos que te van a tomar tiempo para no olvidarte de lo importante.</p>
+        </div>
+      </div>
+      <div class="video-step">
+        <video autoplay muted loop playsinline src="videos/tareas.mp4"></video>
+        <div class="p-4">
+          <h3 class="text-lg font-semibold">3. Define tus Tareas</h3>
+          <p class="text-slate-300">Planifica las tareas que deseas llevar a cabo durante las próximas semanas. Puedes exportarlas a tu calendario.</p>
+        </div>
+      </div>
+      <div class="video-step">
+        <video autoplay muted loop playsinline src="videos/ideas.mp4"></video>
+        <div class="p-4">
+          <h3 class="text-lg font-semibold">4. Captura tus Ideas</h3>
+          <p class="text-slate-300">Cuando te venga algo a la cabeza, anótalo. Si prospera, conviértelo en Meta o Tarea.</p>
+        </div>
+      </div>
+      <div class="video-step md:col-span-2">
+        <video autoplay muted loop playsinline src="videos/checkin.mp4"></video>
+        <div class="p-4">
+          <h3 class="text-lg font-semibold">5. Realiza tu Check-in Semanal</h3>
+          <p class="text-slate-300">De viernes a domingo, revisa cómo ha ido tu semana. Más claridad. Más calma.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMULARIO DE CONTACTO -->
+<section id="contacto" class="py-20 sm:py-24 bg-gradient-to-b from-slate-900 to-slate-950 border-t border-white/5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl">
+      <h2 class="text-3xl sm:text-4xl font-bold">Solicita acceso anticipado</h2>
+      <p class="mt-2 text-slate-300">
+        Cuéntanos brevemente tu situación. Te avisaremos cuando esté lista la beta.
+      </p>
+    </div>
+
+    <form action="https://docs.google.com/forms/d/e/1FAIpQLScOug3VZtocX6xoIKHfK0DIEWID5nTtsB6W2iQqc_Gvh0fHbw/formResponse" method="POST" target="_blank" class="mt-8 grid gap-6 max-w-3xl bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8">
+      <div class="grid sm:grid-cols-2 gap-6">
+        <div>
+          <label for="nombre" class="block text-sm text-slate-300 mb-1">Nombre</label>
+          <input id="nombre" name="entry.1423161941" type="text" required
+                 class="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-400"
+                 placeholder="Tu nombre completo">
+        </div>
+        <div>
+          <label for="email" class="block text-sm text-slate-300 mb-1">Email</label>
+          <input id="email" name="entry.241759202" type="email" required
+                 class="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-400"
+                 placeholder="tu@email.com">
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-6">
+        <div>
+          <label for="perfil" class="block text-sm text-slate-300 mb-1">¿Cuál te define mejor?</label>
+          <select id="perfil" name="entry.1246390769" required
+                  class="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-400">
+            <option value="">Selecciona una opción</option>
+            <option>Profesional con familia</option>
+            <option>Estudiante / Creador</option>
+            <option>Emprendedor/a</option>
+            <option>Neurodivergente (TDAH / time-blindness)</option>
+            <option>Otro (especifica abajo)</option>
+          </select>
+        </div>
+        <div>
+          <label for="objetivo" class="block text-sm text-slate-300 mb-1">Objetivo principal</label>
+          <select id="objetivo" name="entry.474032049" required
+                  class="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-400">
+            <option value="">Selecciona una opción</option>
+            <option>Organizar trabajo y familia</option>
+            <option>Empezar sin bloqueo</option>
+            <option>Mantener hábitos con constancia</option>
+            <option>Revisión clara de mi semana</option>
+            <option>Otro (especifica abajo)</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label for="mensaje" class="block text-sm text-slate-300 mb-1">Cuéntanos tu caso</label>
+        <textarea id="mensaje" name="entry.12042924" rows="4"
+                  class="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-400"
+                  placeholder="¿Qué te cuesta más de la planificación? ¿Qué te gustaría que resolviéramos?"></textarea>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-6">
+        <div class="flex items-center gap-2">
+          <input id="acepto" type="checkbox" required class="h-4 w-4 rounded border-white/20 bg-slate-900/60">
+          <label for="acepto" class="text-sm text-slate-300">Acepto ser contactado por TaskJar</label>
+        </div>
+        <p class="text-sm text-slate-400">
+          Contacto: <a class="underline hover:text-white" href="mailto:hello@taskjar.com">hello@taskjar.com</a>
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+        <button type="submit" class="inline-flex items-center justify-center rounded-xl px-6 py-3 bg-white text-slate-950 font-semibold hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-white/40">
+          Enviar solicitud
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER RESTAURADO -->
+<footer class="border-t border-white/5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-sm text-slate-400">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <p>© <span id="year"></span> TaskJar — Hecho con calma y café.</p>
+      <p>Contacto: <a href="mailto:hello@taskjar.com" class="underline hover:text-white">hello@taskjar.com</a></p>
+    </div>
+  </div>
+</footer>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
