@@ -58,18 +58,55 @@
       width: 20px;
       height: 20px;
     }
+    .image-container {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      cursor: pointer;
+    }
+    .image-controls {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .image-container:hover .image-controls {
+      opacity: 1;
+    }
+    .image-btn {
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    .image-btn:hover {
+      background: rgba(0, 0, 0, 0.9);
+      border-color: rgba(255, 255, 255, 0.6);
+      transform: scale(1.1);
+    }
+    .image-btn svg {
+      width: 20px;
+      height: 20px;
+    }
     @media (max-width: 768px) {
-      .video-controls {
+      .video-controls, .image-controls {
         opacity: 1;
         background: rgba(0, 0, 0, 0.5);
         padding: 8px;
         border-radius: 12px;
         backdrop-filter: blur(10px);
       }
-      .video-btn {
+      .video-btn, .image-btn {
         padding: 10px;
       }
-      .video-btn svg {
+      .video-btn svg, .image-btn svg {
         width: 18px;
         height: 18px;
       }
@@ -150,14 +187,6 @@
     </a>
   </div>
 
-
-  <!-- Captura Ideas -->
-  <div class="relative">
-    <img src="images/ideas.png" alt="Captura tus ideas" class="w-full mt-6 rounded-lg shadow-lg">
-    <div class="absolute inset-0 flex items-center justify-center">
-    </div>
-  </div>
-  
   <!-- Texto para Captura Ideas -->
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
     <h3 class="text-2xl sm:text-3xl font-bold text-center mb-4">Captura tus Ideas</h3>
@@ -167,6 +196,18 @@
     </p>
   </div>
 
+  <!-- Captura Ideas -->
+  <div class="relative image-container" id="ideasContainer">
+    <img src="images/ideas.png" alt="Captura tus ideas" class="w-full mt-6 rounded-lg shadow-lg" id="ideasImage">
+    <div class="image-controls">
+      <button class="image-btn" id="ideasFullscreenBtn" aria-label="Ver imagen en pantalla completa">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  
   <!-- Botón CTA intermedio -->
   <div class="py-12 text-center">
     <a href="#contacto" class="inline-flex items-center justify-center rounded-xl px-8 py-4 bg-white text-slate-950 font-semibold text-lg hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-white/40">
@@ -174,21 +215,28 @@
     </a>
   </div>
 
+   <!-- Texto para Jarrón de Ahorro -->
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
+     <h3 class="text-2xl sm:text-3xl font-bold text-center mb-4">Jarrón de Ahorro</h3>
+     <p class="text-base sm:text-lg text-slate-300 text-center leading-relaxed">
+       ¿Qué pasaría si cada objetivo no cumplido se convirtiera en una oportunidad de crecer? Registra una cantidad simbólica y conviértela en ahorro real.<br>
+       Podrás usar ese fondo en experiencias: desde restaurantes hasta tiendas. Porque tu tiempo... tiene un valor.
+    </p>
+  </div>
+
   <!-- Jarrón de Ahorro -->
-  <div class="relative">
-    <img src="images/taskjar.png" alt="Captura tus ideas" class="w-full mt-6 rounded-lg shadow-lg">
-    <div class="absolute inset-0 flex items-center justify-center">
+  <div class="relative image-container" id="taskjarContainer">
+    <img src="images/taskjar.png" alt="Jarrón de Ahorro" class="w-full mt-6 rounded-lg shadow-lg" id="taskjarImage">
+    <div class="image-controls">
+      <button class="image-btn" id="taskjarFullscreenBtn" aria-label="Ver imagen en pantalla completa">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+        </svg>
+      </button>
     </div>
   </div>
   
-  <!-- Texto para Jarrón de Ahorro -->
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
-    <h3 class="text-2xl sm:text-3xl font-bold text-center mb-4">Jarrón de Ahorro</h3>
-    <p class="text-base sm:text-lg text-slate-300 text-center leading-relaxed">
-      ¿Qué pasaría si cada objetivo no cumplido se convirtiera en una oportunidad de crecer? Registra una cantidad simbólica y conviértela en ahorro real.<br>
-      Podrás usar ese fondo en experiencias: desde restaurantes hasta tiendas. Porque tu tiempo... tiene un valor.
-    </p>
-  </div>
+
 
   <!-- Botón CTA final -->
   <div class="py-12 text-center">
@@ -369,6 +417,68 @@
     } else {
       // Enter fullscreen icon
       fullscreenIcon.setAttribute('d', 'M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z');
+    }
+  });
+
+  // Image fullscreen functionality
+  const ideasImage = document.getElementById('ideasImage');
+  const ideasFullscreenBtn = document.getElementById('ideasFullscreenBtn');
+  const taskjarImage = document.getElementById('taskjarImage');
+  const taskjarFullscreenBtn = document.getElementById('taskjarFullscreenBtn');
+
+  // Ideas image fullscreen
+  ideasFullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      ideasImage.requestFullscreen().catch(err => {
+        console.log('Error attempting to enable fullscreen:', err);
+        // Fallback for mobile browsers
+        if (ideasImage.webkitRequestFullscreen) {
+          ideasImage.webkitRequestFullscreen();
+        } else if (ideasImage.msRequestFullscreen) {
+          ideasImage.msRequestFullscreen();
+        }
+      });
+    } else {
+      document.exitFullscreen().catch(err => {
+        console.log('Error attempting to exit fullscreen:', err);
+      });
+    }
+  });
+
+  // Taskjar image fullscreen
+  taskjarFullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      taskjarImage.requestFullscreen().catch(err => {
+        console.log('Error attempting to enable fullscreen:', err);
+        // Fallback for mobile browsers
+        if (taskjarImage.webkitRequestFullscreen) {
+          taskjarImage.webkitRequestFullscreen();
+        } else if (taskjarImage.msRequestFullscreen) {
+          taskjarImage.msRequestFullscreen();
+        }
+      });
+    } else {
+      document.exitFullscreen().catch(err => {
+        console.log('Error attempting to exit fullscreen:', err);
+      });
+    }
+  });
+
+  // Update image fullscreen button icons when entering/exiting fullscreen
+  document.addEventListener('fullscreenchange', () => {
+    const ideasIcon = ideasFullscreenBtn.querySelector('svg path');
+    const taskjarIcon = taskjarFullscreenBtn.querySelector('svg path');
+    
+    if (document.fullscreenElement) {
+      // Exit fullscreen icon
+      const exitIcon = 'M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z';
+      ideasIcon.setAttribute('d', exitIcon);
+      taskjarIcon.setAttribute('d', exitIcon);
+    } else {
+      // Enter fullscreen icon
+      const enterIcon = 'M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z';
+      ideasIcon.setAttribute('d', enterIcon);
+      taskjarIcon.setAttribute('d', enterIcon);
     }
   });
 </script>
