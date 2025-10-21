@@ -21,6 +21,60 @@
       height: 100vh;
       object-fit: cover;
     }
+    .video-container {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    .video-controls {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      gap: 12px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .video-container:hover .video-controls,
+    .video-container:focus-within .video-controls {
+      opacity: 1;
+    }
+    .video-btn {
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    .video-btn:hover {
+      background: rgba(0, 0, 0, 0.9);
+      border-color: rgba(255, 255, 255, 0.6);
+      transform: scale(1.1);
+    }
+    .video-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    @media (max-width: 768px) {
+      .video-controls {
+        opacity: 1;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 8px;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+      }
+      .video-btn {
+        padding: 10px;
+      }
+      .video-btn svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-white">
@@ -72,9 +126,22 @@
 <!-- NUEVA SECCIÓN CÓMO FUNCIONA -->
 <section id="como-funciona">
   <!-- Video de introducción sin texto -->
-  <div class="relative">
-    <video autoplay muted loop playsinline src="videos/TaskJar.mp4"></video>
-    <div class="absolute inset-0 flex items-center justify-center">
+  <div class="relative video-container">
+    <video id="mainVideo" muted loop playsinline src="videos/TaskJar.mp4"></video>
+    <div class="video-controls">
+      <button class="video-btn" id="playPauseBtn" aria-label="Play/Pause video">
+        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+        </svg>
+      </button>
+      <button class="video-btn" id="fullscreenBtn" aria-label="Enter fullscreen">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+        </svg>
+      </button>
     </div>
   </div>
   <!-- Botón CTA inicial -->
@@ -219,11 +286,73 @@
       }
     });
   }, {
-    threshold: 0.5
+    threshold: 1.0  // Changed from 0.5 to 1.0 for 100% visibility
   });
 
   videos.forEach(video => {
     observer.observe(video);
+  });
+
+  // Video controls functionality
+  const mainVideo = document.getElementById('mainVideo');
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const playIcon = document.getElementById('playIcon');
+  const pauseIcon = document.getElementById('pauseIcon');
+
+  // Play/Pause functionality
+  playPauseBtn.addEventListener('click', () => {
+    if (mainVideo.paused) {
+      mainVideo.play();
+      playIcon.style.display = 'none';
+      pauseIcon.style.display = 'block';
+    } else {
+      mainVideo.pause();
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+    }
+  });
+
+  // Update play/pause button when video state changes
+  mainVideo.addEventListener('play', () => {
+    playIcon.style.display = 'none';
+    pauseIcon.style.display = 'block';
+  });
+
+  mainVideo.addEventListener('pause', () => {
+    playIcon.style.display = 'block';
+    pauseIcon.style.display = 'none';
+  });
+
+  // Fullscreen functionality
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      mainVideo.requestFullscreen().catch(err => {
+        console.log('Error attempting to enable fullscreen:', err);
+        // Fallback for mobile browsers
+        if (mainVideo.webkitRequestFullscreen) {
+          mainVideo.webkitRequestFullscreen();
+        } else if (mainVideo.msRequestFullscreen) {
+          mainVideo.msRequestFullscreen();
+        }
+      });
+    } else {
+      document.exitFullscreen().catch(err => {
+        console.log('Error attempting to exit fullscreen:', err);
+      });
+    }
+  });
+
+  // Update fullscreen button icon when entering/exiting fullscreen
+  document.addEventListener('fullscreenchange', () => {
+    const fullscreenIcon = fullscreenBtn.querySelector('svg path');
+    if (document.fullscreenElement) {
+      // Exit fullscreen icon
+      fullscreenIcon.setAttribute('d', 'M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z');
+    } else {
+      // Enter fullscreen icon
+      fullscreenIcon.setAttribute('d', 'M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z');
+    }
   });
 </script>
 
