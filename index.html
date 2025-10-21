@@ -309,8 +309,8 @@
       <!-- Description -->
       <div class="text-center mb-12">
         <p class="text-lg sm:text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto">
-          ¿Qué pasaría si cada objetivo no cumplido se convirtiera en una oportunidad de crecer? Registra una cantidad simbólica y conviértela en ahorro real.<br>
-          <span class="text-emerald-300 font-medium">Además consigue puntos por tus logros. Podrás usarlos en experiencias: desde restaurantes hasta tiendas. Porque tu tiempo... tiene un valor.</span>
+          ¿Qué pasaría si cada objetivo no cumplido se convirtiera en dinero real ahorrado? Cuando no cumples una tarea o meta planificada, eliges una cantidad (ej: 5€) y ese dinero se transfiere automáticamente a tu TaskJar. Así cada "fallo" se convierte en dinero real en tu bolsillo.<br>
+          <span class="text-emerald-300 font-medium">Y además, consigues puntos por tus logros. Podrás usarlos en experiencias: desde restaurantes hasta tiendas. Porque tu tiempo vale <span class="text-yellow-400 font-semibold">oro</span> y tu compromiso tiene <span class="text-yellow-400 font-semibold">premio</span>.</span>
         </p>
       </div>
       
@@ -724,10 +724,15 @@
       // Add zoom functionality when entering fullscreen
       const fullscreenImg = document.fullscreenElement;
       if (fullscreenImg.tagName === 'IMG') {
+        console.log('Adding zoom functionality to:', fullscreenImg);
         fullscreenImg.classList.add('fullscreen-image');
-        createZoomControls();
-        addDragFunctionality(fullscreenImg);
-        resetZoom(); // Reset zoom when entering fullscreen
+        
+        // Small delay to ensure fullscreen is fully active
+        setTimeout(() => {
+          createZoomControls();
+          addDragFunctionality(fullscreenImg);
+          resetZoom(); // Reset zoom when entering fullscreen
+        }, 100);
       }
     } else {
       // Enter fullscreen icon
@@ -739,6 +744,86 @@
       removeZoomControls();
     }
   });
+
+  // Alternative: Add zoom controls directly to image containers for easier access
+  function addInlineZoomControls() {
+    const ideasContainer = document.getElementById('ideasContainer');
+    const taskjarContainer = document.getElementById('taskjarContainer');
+    
+    // Add zoom controls to ideas image
+    const ideasZoomControls = document.createElement('div');
+    ideasZoomControls.className = 'image-controls';
+    ideasZoomControls.innerHTML = `
+      <button class="image-btn" id="ideasZoomIn" aria-label="Zoom in">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+      </button>
+      <button class="image-btn" id="ideasZoomOut" aria-label="Zoom out">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 13H5v-2h14v2z"/>
+        </svg>
+      </button>
+      <button class="image-btn" id="ideasFullscreenBtn" aria-label="Ver imagen en pantalla completa">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+        </svg>
+      </button>
+    `;
+    
+    // Add zoom controls to taskjar image
+    const taskjarZoomControls = document.createElement('div');
+    taskjarZoomControls.className = 'image-controls';
+    taskjarZoomControls.innerHTML = `
+      <button class="image-btn" id="taskjarZoomIn" aria-label="Zoom in">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+      </button>
+      <button class="image-btn" id="taskjarZoomOut" aria-label="Zoom out">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 13H5v-2h14v2z"/>
+        </svg>
+      </button>
+      <button class="image-btn" id="taskjarFullscreenBtn" aria-label="Ver imagen en pantalla completa">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+        </svg>
+      </button>
+    `;
+    
+    // Replace existing controls
+    ideasContainer.querySelector('.image-controls').replaceWith(ideasZoomControls);
+    taskjarContainer.querySelector('.image-controls').replaceWith(taskjarZoomControls);
+    
+    // Add event listeners for inline zoom
+    document.getElementById('ideasZoomIn').addEventListener('click', () => {
+      const img = document.getElementById('ideasImage');
+      img.style.transform = `scale(${currentZoom * 1.2})`;
+      currentZoom *= 1.2;
+    });
+    
+    document.getElementById('ideasZoomOut').addEventListener('click', () => {
+      const img = document.getElementById('ideasImage');
+      currentZoom = Math.max(0.5, currentZoom * 0.8);
+      img.style.transform = `scale(${currentZoom})`;
+    });
+    
+    document.getElementById('taskjarZoomIn').addEventListener('click', () => {
+      const img = document.getElementById('taskjarImage');
+      img.style.transform = `scale(${currentZoom * 1.2})`;
+      currentZoom *= 1.2;
+    });
+    
+    document.getElementById('taskjarZoomOut').addEventListener('click', () => {
+      const img = document.getElementById('taskjarImage');
+      currentZoom = Math.max(0.5, currentZoom * 0.8);
+      img.style.transform = `scale(${currentZoom})`;
+    });
+  }
+
+  // Initialize inline zoom controls
+  addInlineZoomControls();
 </script>
 
 </body>
