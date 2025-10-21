@@ -34,10 +34,11 @@
       gap: 12px;
       opacity: 0;
       transition: opacity 0.3s ease;
+      pointer-events: none;
     }
-    .video-container:hover .video-controls,
-    .video-container:focus-within .video-controls {
+    .video-controls.show {
       opacity: 1;
+      pointer-events: auto;
     }
     .video-btn {
       background: rgba(0, 0, 0, 0.7);
@@ -72,9 +73,11 @@
       gap: 12px;
       opacity: 0;
       transition: opacity 0.3s ease;
+      pointer-events: none;
     }
-    .image-container:hover .image-controls {
+    .image-controls.show {
       opacity: 1;
+      pointer-events: auto;
     }
     .image-btn {
       background: rgba(0, 0, 0, 0.7);
@@ -95,9 +98,62 @@
       width: 20px;
       height: 20px;
     }
+    /* Fullscreen image zoom styles */
+    .fullscreen-image {
+      transition: transform 0.3s ease;
+      cursor: grab;
+    }
+    .fullscreen-image:active {
+      cursor: grabbing;
+    }
+    .fullscreen-image.zoomed {
+      cursor: grab;
+    }
+    .fullscreen-image.zoomed:active {
+      cursor: grabbing;
+    }
+    .zoom-controls {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 12px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+    }
+    .zoom-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      font-weight: bold;
+      min-width: 40px;
+    }
+    .zoom-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.6);
+      transform: scale(1.05);
+    }
+    .zoom-btn:active {
+      transform: scale(0.95);
+    }
+    .zoom-reset {
+      background: rgba(59, 130, 246, 0.3);
+      border-color: rgba(59, 130, 246, 0.6);
+    }
+    .zoom-reset:hover {
+      background: rgba(59, 130, 246, 0.5);
+    }
     @media (max-width: 768px) {
-      .video-controls, .image-controls {
-        opacity: 1;
+      .video-controls.show, .image-controls.show {
         background: rgba(0, 0, 0, 0.5);
         padding: 8px;
         border-radius: 12px;
@@ -109,6 +165,16 @@
       .video-btn svg, .image-btn svg {
         width: 18px;
         height: 18px;
+      }
+      .zoom-controls {
+        bottom: 10px;
+        padding: 10px;
+        gap: 8px;
+      }
+      .zoom-btn {
+        padding: 8px;
+        font-size: 12px;
+        min-width: 35px;
       }
     }
   </style>
@@ -364,6 +430,22 @@
   const fullscreenBtn = document.getElementById('fullscreenBtn');
   const playIcon = document.getElementById('playIcon');
   const pauseIcon = document.getElementById('pauseIcon');
+  const videoControls = document.querySelector('.video-controls');
+  
+  let videoControlsTimeout;
+
+  // Show video controls on click/touch
+  function showVideoControls() {
+    videoControls.classList.add('show');
+    clearTimeout(videoControlsTimeout);
+    videoControlsTimeout = setTimeout(() => {
+      videoControls.classList.remove('show');
+    }, 3000); // Hide after 3 seconds of inactivity
+  }
+
+  // Add click/touch listeners to video
+  mainVideo.addEventListener('click', showVideoControls);
+  mainVideo.addEventListener('touchstart', showVideoControls);
 
   // Play/Pause functionality
   playPauseBtn.addEventListener('click', () => {
@@ -376,6 +458,7 @@
       playIcon.style.display = 'block';
       pauseIcon.style.display = 'none';
     }
+    showVideoControls(); // Show controls when interacting with them
   });
 
   // Update play/pause button when video state changes
@@ -406,6 +489,7 @@
         console.log('Error attempting to exit fullscreen:', err);
       });
     }
+    showVideoControls(); // Show controls when interacting with them
   });
 
   // Update fullscreen button icon when entering/exiting fullscreen
@@ -423,11 +507,34 @@
   // Image fullscreen functionality
   const ideasImage = document.getElementById('ideasImage');
   const ideasFullscreenBtn = document.getElementById('ideasFullscreenBtn');
+  const ideasContainer = document.getElementById('ideasContainer');
   const taskjarImage = document.getElementById('taskjarImage');
   const taskjarFullscreenBtn = document.getElementById('taskjarFullscreenBtn');
+  const taskjarContainer = document.getElementById('taskjarContainer');
+  
+  let ideasControlsTimeout;
+  let taskjarControlsTimeout;
+
+  // Show image controls on click/touch
+  function showImageControls(container, timeoutVar) {
+    const controls = container.querySelector('.image-controls');
+    controls.classList.add('show');
+    clearTimeout(timeoutVar);
+    timeoutVar = setTimeout(() => {
+      controls.classList.remove('show');
+    }, 3000); // Hide after 3 seconds of inactivity
+  }
+
+  // Add click/touch listeners to images
+  ideasContainer.addEventListener('click', () => showImageControls(ideasContainer, ideasControlsTimeout));
+  ideasContainer.addEventListener('touchstart', () => showImageControls(ideasContainer, ideasControlsTimeout));
+  
+  taskjarContainer.addEventListener('click', () => showImageControls(taskjarContainer, taskjarControlsTimeout));
+  taskjarContainer.addEventListener('touchstart', () => showImageControls(taskjarContainer, taskjarControlsTimeout));
 
   // Ideas image fullscreen
-  ideasFullscreenBtn.addEventListener('click', () => {
+  ideasFullscreenBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevent triggering container click
     if (!document.fullscreenElement) {
       ideasImage.requestFullscreen().catch(err => {
         console.log('Error attempting to enable fullscreen:', err);
@@ -443,10 +550,12 @@
         console.log('Error attempting to exit fullscreen:', err);
       });
     }
+    showImageControls(ideasContainer, ideasControlsTimeout);
   });
 
   // Taskjar image fullscreen
-  taskjarFullscreenBtn.addEventListener('click', () => {
+  taskjarFullscreenBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevent triggering container click
     if (!document.fullscreenElement) {
       taskjarImage.requestFullscreen().catch(err => {
         console.log('Error attempting to enable fullscreen:', err);
@@ -462,7 +571,115 @@
         console.log('Error attempting to exit fullscreen:', err);
       });
     }
+    showImageControls(taskjarContainer, taskjarControlsTimeout);
   });
+
+  // Image zoom functionality
+  let currentZoom = 1;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let translateX = 0;
+  let translateY = 0;
+
+  function createZoomControls() {
+    const zoomControls = document.createElement('div');
+    zoomControls.className = 'zoom-controls';
+    zoomControls.innerHTML = `
+      <button class="zoom-btn" id="zoomOut">-</button>
+      <button class="zoom-btn zoom-reset" id="zoomReset">Reset</button>
+      <button class="zoom-btn" id="zoomIn">+</button>
+    `;
+    document.body.appendChild(zoomControls);
+
+    const zoomOutBtn = document.getElementById('zoomOut');
+    const zoomResetBtn = document.getElementById('zoomReset');
+    const zoomInBtn = document.getElementById('zoomIn');
+
+    zoomOutBtn.addEventListener('click', () => zoomImage(0.8));
+    zoomResetBtn.addEventListener('click', () => resetZoom());
+    zoomInBtn.addEventListener('click', () => zoomImage(1.2));
+  }
+
+  function removeZoomControls() {
+    const zoomControls = document.querySelector('.zoom-controls');
+    if (zoomControls) {
+      zoomControls.remove();
+    }
+  }
+
+  function zoomImage(factor) {
+    const fullscreenImg = document.querySelector('.fullscreen-image');
+    if (fullscreenImg) {
+      currentZoom *= factor;
+      currentZoom = Math.max(0.5, Math.min(3, currentZoom)); // Limit zoom between 0.5x and 3x
+      
+      fullscreenImg.style.transform = `scale(${currentZoom}) translate(${translateX}px, ${translateY}px)`;
+      fullscreenImg.classList.add('zoomed');
+    }
+  }
+
+  function resetZoom() {
+    const fullscreenImg = document.querySelector('.fullscreen-image');
+    if (fullscreenImg) {
+      currentZoom = 1;
+      translateX = 0;
+      translateY = 0;
+      fullscreenImg.style.transform = 'scale(1) translate(0px, 0px)';
+      fullscreenImg.classList.remove('zoomed');
+    }
+  }
+
+  function addDragFunctionality(img) {
+    img.addEventListener('mousedown', (e) => {
+      if (currentZoom > 1) {
+        isDragging = true;
+        startX = e.clientX - translateX;
+        startY = e.clientY - translateY;
+        img.style.cursor = 'grabbing';
+      }
+    });
+
+    img.addEventListener('mousemove', (e) => {
+      if (isDragging && currentZoom > 1) {
+        translateX = e.clientX - startX;
+        translateY = e.clientY - startY;
+        img.style.transform = `scale(${currentZoom}) translate(${translateX}px, ${translateY}px)`;
+      }
+    });
+
+    img.addEventListener('mouseup', () => {
+      isDragging = false;
+      img.style.cursor = currentZoom > 1 ? 'grab' : 'default';
+    });
+
+    img.addEventListener('mouseleave', () => {
+      isDragging = false;
+      img.style.cursor = currentZoom > 1 ? 'grab' : 'default';
+    });
+
+    // Touch support for mobile
+    img.addEventListener('touchstart', (e) => {
+      if (currentZoom > 1 && e.touches.length === 1) {
+        isDragging = true;
+        startX = e.touches[0].clientX - translateX;
+        startY = e.touches[0].clientY - translateY;
+      }
+    });
+
+    img.addEventListener('touchmove', (e) => {
+      if (isDragging && currentZoom > 1 && e.touches.length === 1) {
+        e.preventDefault();
+        translateX = e.touches[0].clientX - startX;
+        translateY = e.touches[0].clientY - startY;
+        img.style.transform = `scale(${currentZoom}) translate(${translateX}px, ${translateY}px)`;
+      }
+    });
+
+    img.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+  }
 
   // Update image fullscreen button icons when entering/exiting fullscreen
   document.addEventListener('fullscreenchange', () => {
@@ -474,11 +691,23 @@
       const exitIcon = 'M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z';
       ideasIcon.setAttribute('d', exitIcon);
       taskjarIcon.setAttribute('d', exitIcon);
+      
+      // Add zoom functionality when entering fullscreen
+      const fullscreenImg = document.fullscreenElement;
+      if (fullscreenImg.tagName === 'IMG') {
+        fullscreenImg.classList.add('fullscreen-image');
+        createZoomControls();
+        addDragFunctionality(fullscreenImg);
+        resetZoom(); // Reset zoom when entering fullscreen
+      }
     } else {
       // Enter fullscreen icon
       const enterIcon = 'M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z';
       ideasIcon.setAttribute('d', enterIcon);
       taskjarIcon.setAttribute('d', enterIcon);
+      
+      // Remove zoom controls when exiting fullscreen
+      removeZoomControls();
     }
   });
 </script>
