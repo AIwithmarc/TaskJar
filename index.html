@@ -102,6 +102,11 @@
     .fullscreen-image {
       transition: transform 0.3s ease;
       cursor: grab;
+      max-width: none !important;
+      max-height: none !important;
+      width: auto !important;
+      height: auto !important;
+      object-fit: contain !important;
     }
     .fullscreen-image:active {
       cursor: grabbing;
@@ -111,6 +116,31 @@
     }
     .fullscreen-image.zoomed:active {
       cursor: grabbing;
+    }
+    
+    /* Ensure fullscreen images can rotate and scale properly */
+    :fullscreen .fullscreen-image {
+      width: 100vw !important;
+      height: 100vh !important;
+      object-fit: contain !important;
+      transform-origin: center center;
+    }
+    
+    /* Landscape orientation support */
+    @media screen and (orientation: landscape) {
+      :fullscreen .fullscreen-image {
+        width: 100vw !important;
+        height: 100vh !important;
+        object-fit: contain !important;
+      }
+    }
+    
+    @media screen and (orientation: portrait) {
+      :fullscreen .fullscreen-image {
+        width: 100vw !important;
+        height: 100vh !important;
+        object-fit: contain !important;
+      }
     }
     .zoom-controls {
       position: fixed;
@@ -424,7 +454,7 @@
 <footer class="border-t border-white/5">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-sm text-slate-400">
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-      <p>© <span id="year"></span> TaskJar — Hecho con calma y café.</p>
+      <p>© <span id="year"></span> TaskJar — Hecho con calma y café por <a href="https://www.aiwithmarc.com" target="_blank" class="underline hover:text-white">AIwithMarc</a>.</p>
       <p>Contacto: <a href="mailto:hello@taskjar.com" class="underline hover:text-white">hello@taskjar.com</a></p>
     </div>
   </div>
@@ -446,7 +476,7 @@
       }
     });
   }, {
-    threshold: 1.0  // Changed from 0.5 to 1.0 for 100% visibility
+    threshold: 0.85  // Changed to 85% visibility for better user experience
   });
 
   videos.forEach(video => {
@@ -565,17 +595,15 @@
   ideasFullscreenBtn.addEventListener('click', (e) => {
     e.stopPropagation(); // Prevent triggering container click
     if (!document.fullscreenElement) {
-      ideasImage.requestFullscreen().catch(err => {
+      requestFullscreen(ideasImage).then(() => {
+        console.log('Ideas image entered fullscreen');
+      }).catch(err => {
         console.log('Error attempting to enable fullscreen:', err);
-        // Fallback for mobile browsers
-        if (ideasImage.webkitRequestFullscreen) {
-          ideasImage.webkitRequestFullscreen();
-        } else if (ideasImage.msRequestFullscreen) {
-          ideasImage.msRequestFullscreen();
-        }
       });
     } else {
-      document.exitFullscreen().catch(err => {
+      exitFullscreen().then(() => {
+        console.log('Exited fullscreen');
+      }).catch(err => {
         console.log('Error attempting to exit fullscreen:', err);
       });
     }
@@ -586,17 +614,15 @@
   taskjarFullscreenBtn.addEventListener('click', (e) => {
     e.stopPropagation(); // Prevent triggering container click
     if (!document.fullscreenElement) {
-      taskjarImage.requestFullscreen().catch(err => {
+      requestFullscreen(taskjarImage).then(() => {
+        console.log('Taskjar image entered fullscreen');
+      }).catch(err => {
         console.log('Error attempting to enable fullscreen:', err);
-        // Fallback for mobile browsers
-        if (taskjarImage.webkitRequestFullscreen) {
-          taskjarImage.webkitRequestFullscreen();
-        } else if (taskjarImage.msRequestFullscreen) {
-          taskjarImage.msRequestFullscreen();
-        }
       });
     } else {
-      document.exitFullscreen().catch(err => {
+      exitFullscreen().then(() => {
+        console.log('Exited fullscreen');
+      }).catch(err => {
         console.log('Error attempting to exit fullscreen:', err);
       });
     }
@@ -657,6 +683,27 @@
       fullscreenImg.style.transform = 'scale(1) translate(0px, 0px)';
       fullscreenImg.classList.remove('zoomed');
     }
+  }
+
+  function resetAllImages() {
+    // Reset all images to their original state
+    const ideasImg = document.getElementById('ideasImage');
+    const taskjarImg = document.getElementById('taskjarImage');
+    
+    if (ideasImg) {
+      ideasImg.style.transform = '';
+      ideasImg.classList.remove('fullscreen-image', 'zoomed');
+    }
+    
+    if (taskjarImg) {
+      taskjarImg.style.transform = '';
+      taskjarImg.classList.remove('fullscreen-image', 'zoomed');
+    }
+    
+    // Reset zoom variables
+    currentZoom = 1;
+    translateX = 0;
+    translateY = 0;
   }
 
   function addDragFunctionality(img) {
@@ -729,7 +776,7 @@
         
         // Small delay to ensure fullscreen is fully active
         setTimeout(() => {
-          createZoomControls();
+          createFullscreenZoomControls();
           addDragFunctionality(fullscreenImg);
           resetZoom(); // Reset zoom when entering fullscreen
         }, 100);
@@ -741,89 +788,66 @@
       taskjarIcon.setAttribute('d', enterIcon);
       
       // Remove zoom controls when exiting fullscreen
-      removeZoomControls();
+      removeFullscreenZoomControls();
+      
+      // Reset all images to their original state
+      resetAllImages();
     }
   });
 
-  // Alternative: Add zoom controls directly to image containers for easier access
-  function addInlineZoomControls() {
-    const ideasContainer = document.getElementById('ideasContainer');
-    const taskjarContainer = document.getElementById('taskjarContainer');
-    
-    // Add zoom controls to ideas image
-    const ideasZoomControls = document.createElement('div');
-    ideasZoomControls.className = 'image-controls';
-    ideasZoomControls.innerHTML = `
-      <button class="image-btn" id="ideasZoomIn" aria-label="Zoom in">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-        </svg>
-      </button>
-      <button class="image-btn" id="ideasZoomOut" aria-label="Zoom out">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19 13H5v-2h14v2z"/>
-        </svg>
-      </button>
-      <button class="image-btn" id="ideasFullscreenBtn" aria-label="Ver imagen en pantalla completa">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
-        </svg>
-      </button>
-    `;
-    
-    // Add zoom controls to taskjar image
-    const taskjarZoomControls = document.createElement('div');
-    taskjarZoomControls.className = 'image-controls';
-    taskjarZoomControls.innerHTML = `
-      <button class="image-btn" id="taskjarZoomIn" aria-label="Zoom in">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-        </svg>
-      </button>
-      <button class="image-btn" id="taskjarZoomOut" aria-label="Zoom out">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19 13H5v-2h14v2z"/>
-        </svg>
-      </button>
-      <button class="image-btn" id="taskjarFullscreenBtn" aria-label="Ver imagen en pantalla completa">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
-        </svg>
-      </button>
-    `;
-    
-    // Replace existing controls
-    ideasContainer.querySelector('.image-controls').replaceWith(ideasZoomControls);
-    taskjarContainer.querySelector('.image-controls').replaceWith(taskjarZoomControls);
-    
-    // Add event listeners for inline zoom
-    document.getElementById('ideasZoomIn').addEventListener('click', () => {
-      const img = document.getElementById('ideasImage');
-      img.style.transform = `scale(${currentZoom * 1.2})`;
-      currentZoom *= 1.2;
-    });
-    
-    document.getElementById('ideasZoomOut').addEventListener('click', () => {
-      const img = document.getElementById('ideasImage');
-      currentZoom = Math.max(0.5, currentZoom * 0.8);
-      img.style.transform = `scale(${currentZoom})`;
-    });
-    
-    document.getElementById('taskjarZoomIn').addEventListener('click', () => {
-      const img = document.getElementById('taskjarImage');
-      img.style.transform = `scale(${currentZoom * 1.2})`;
-      currentZoom *= 1.2;
-    });
-    
-    document.getElementById('taskjarZoomOut').addEventListener('click', () => {
-      const img = document.getElementById('taskjarImage');
-      currentZoom = Math.max(0.5, currentZoom * 0.8);
-      img.style.transform = `scale(${currentZoom})`;
-    });
+  // Enhanced fullscreen functionality with proper mobile support
+  function requestFullscreen(element) {
+    if (element.requestFullscreen) {
+      return element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+      return element.webkitRequestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      return element.mozRequestFullScreen();
+    } else if (element.msRequestFullscreen) {
+      return element.msRequestFullscreen();
+    }
+    return Promise.reject('Fullscreen not supported');
   }
 
-  // Initialize inline zoom controls
-  addInlineZoomControls();
+  function exitFullscreen() {
+    if (document.exitFullscreen) {
+      return document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      return document.webkitExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      return document.mozCancelFullScreen();
+    } else if (document.msExitFullscreen) {
+      return document.msExitFullscreen();
+    }
+    return Promise.reject('Exit fullscreen not supported');
+  }
+
+  // Enhanced fullscreen image functionality
+  function createFullscreenZoomControls() {
+    const zoomControls = document.createElement('div');
+    zoomControls.className = 'zoom-controls';
+    zoomControls.innerHTML = `
+      <button class="zoom-btn" id="zoomOut">-</button>
+      <button class="zoom-btn zoom-reset" id="zoomReset">Reset</button>
+      <button class="zoom-btn" id="zoomIn">+</button>
+    `;
+    document.body.appendChild(zoomControls);
+
+    const zoomOutBtn = document.getElementById('zoomOut');
+    const zoomResetBtn = document.getElementById('zoomReset');
+    const zoomInBtn = document.getElementById('zoomIn');
+
+    zoomOutBtn.addEventListener('click', () => zoomImage(0.8));
+    zoomResetBtn.addEventListener('click', () => resetZoom());
+    zoomInBtn.addEventListener('click', () => zoomImage(1.2));
+  }
+
+  function removeFullscreenZoomControls() {
+    const zoomControls = document.querySelector('.zoom-controls');
+    if (zoomControls) {
+      zoomControls.remove();
+    }
+  }
 </script>
 
 </body>
